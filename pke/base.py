@@ -431,6 +431,50 @@ class LoadFile(object):
                 seq = []
 
 
+    def shortest_pos_sequence_selection(self, valid_pos=None):
+        """ Select the shortest sequences of given POS tags as candidates.
+
+            Args:
+                valid_pos (set): the set of valid POS tags, defaults to None.
+        """
+
+        # loop through the sentences
+        for i, sentence in enumerate(self.sentences):
+
+            # compute the offset shift for the sentence
+            shift = sum([s.length for s in self.sentences[0:i]])
+
+            # container for the sequence (defined as list of offsets)
+            seq = []
+
+            # loop through the tokens
+            for j, pos in enumerate(self.sentences[i].pos):
+
+                # add candidate offset in sequence and continue if not last word
+                if pos in valid_pos:
+                    seq.append(j)
+                    if j < (sentence.length - 1):
+                        continue
+
+                # add sequence as candidate if non empty
+                if seq:
+
+                    # bias for candidate in last position within sentence
+                    bias = 0
+                    if j == (sentence.length - 1):
+                        bias = 1
+
+                    # add the ngram to the candidate container
+                    self.add_candidate(words=sentence.words[seq[0]:seq[-1]+1],
+                                       stems=sentence.stems[seq[0]:seq[-1]+1],
+                                       pos=sentence.pos[seq[0]:seq[-1]+1],
+                                       offset=shift+j-len(seq)+bias,
+                                       sentence_id=i)
+
+                # flush sequence container
+                seq = []
+
+
     def grammar_selection(self, grammar=None):
         """ Select candidates using nltk RegexpParser with a grammar defining
             noun phrases (NP).

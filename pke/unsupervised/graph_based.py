@@ -79,7 +79,7 @@ class SingleRank(LoadFile):
         """ The word graph. """
 
 
-    def candidate_selection(self, pos=None, stoplist=None):
+    def candidate_selection(self, pos=None, stoplist=None, compound=True):
         """ The candidate selection as described in the SingleRank paper.
 
             Args:
@@ -95,7 +95,9 @@ class SingleRank(LoadFile):
             pos = set(['NN', 'NNS', 'NNP', 'NNPS', 'JJ', 'JJR', 'JJS'])
 
         # select sequence of adjectives and nouns
-        self.longest_pos_sequence_selection(valid_pos=pos)
+        select_func = self.longest_pos_sequence_selection \
+            if compound else self.shortest_pos_sequence_selection
+        select_func(valid_pos=pos)
 
         # initialize stoplist list if not provided
         if stoplist is None:
@@ -227,7 +229,7 @@ class TopicRank(LoadFile):
         """ The topic container. """
 
 
-    def candidate_selection(self, pos=None, stoplist=None):
+    def candidate_selection(self, pos=None, stoplist=None, compound=True):
         """ The candidate selection as described in the SingleRank paper.
 
             Args:
@@ -243,7 +245,9 @@ class TopicRank(LoadFile):
             pos = set(['NN', 'NNS', 'NNP', 'NNPS', 'JJ', 'JJR', 'JJS'])
 
         # select sequence of adjectives and nouns
-        self.longest_pos_sequence_selection(valid_pos=pos)
+        select_func = self.longest_pos_sequence_selection \
+            if compound else self.shortest_pos_sequence_selection
+        select_func(valid_pos=pos)
 
         # initialize stoplist list if not provided
         if stoplist is None:
