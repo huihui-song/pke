@@ -3,7 +3,6 @@
 
 """ Readers for the pke module. """
 
-import codecs
 import xml.etree.ElementTree as etree
 from nltk.tag import str2tuple, pos_tag_sents
 from nltk.tokenize import sent_tokenize, word_tokenize
@@ -31,12 +30,16 @@ class PreProcessedTextReader(object):
     """ Reader for pre-processed text. """
     def __init__(self, path, sep=u'/'):
         self.sentences = []
-        for line in codecs.open(path, 'r', 'utf-8'):
-            tuples = line.strip().split()
-            self.sentences.append({
-                "words" : [str2tuple(u, sep=sep)[0] for u in tuples],
-                "POS" : [str2tuple(u, sep=sep)[1] for u in tuples]
-            })
+        with open(path, 'r') as f:
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                tuples = line.strip().split()
+                self.sentences.append({
+                    "words": [str2tuple(u, sep=sep)[0] for u in tuples],
+                    "POS": [str2tuple(u, sep=sep)[1] for u in tuples]
+                })
 
 
 class RawTextReader(object):
@@ -45,7 +48,7 @@ class RawTextReader(object):
         self.sentences = []
         raw_text = input_text
         if path is not None:
-            with codecs.open(path, 'r', 'utf-8') as f:
+            with open(path, 'r') as f:
                 raw_text = f.read()
         sentences = [word_tokenize(s) for s in sent_tokenize(raw_text)]
         tuples = pos_tag_sents(sentences)

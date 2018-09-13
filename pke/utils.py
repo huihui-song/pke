@@ -10,7 +10,6 @@ import csv
 import glob
 import pickle
 import gzip
-import codecs
 import logging
 from collections import defaultdict
 
@@ -42,7 +41,7 @@ def load_document_frequency_file(input_file,
 
     # open the input file
     with gzip.open(input_file, 'rt') if input_file.endswith('.gz') else \
-         codecs.open(input_file, 'rt') as f:
+         open(input_file, 'rt') as f:
 
         # read the csv file
         df_reader = csv.reader(f, delimiter=delimiter)
@@ -221,7 +220,7 @@ def load_references(input_file,
 
     references = defaultdict(list)
 
-    with codecs.open(input_file, 'r', 'utf-8') as f:
+    with open(input_file, 'r') as f:
         for line in f:
             cols = line.strip().split(sep_doc_id)
             doc_id = cols[0].strip()

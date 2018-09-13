@@ -453,8 +453,10 @@ class LoadFile(object):
                 # add candidate offset in sequence and continue if not last word
                 if pos in valid_pos:
                     seq.append(j)
-                    if j < (sentence.length - 1):
+                    if j < 2:
                         continue
+                    # if j < (sentence.length - 1):
+                    #     continue
 
                 # add sequence as candidate if non empty
                 if seq:
@@ -470,9 +472,11 @@ class LoadFile(object):
                                        pos=sentence.pos[seq[0]:seq[-1]+1],
                                        offset=shift+j-len(seq)+bias,
                                        sentence_id=i)
+                    # print('add: ', sentence.words[seq[0]:seq[-1] + 1], 'cans: ', self.candidates)
 
                 # flush sequence container
                 seq = []
+        # print("over: ", self.candidates)
 
 
     def grammar_selection(self, grammar=None):
@@ -542,11 +546,11 @@ class LoadFile(object):
 
     def candidate_filtering(self,
                             stoplist=[],
-                            mininum_length=3,
-                            mininum_word_size=2,
+                            mininum_length=1,
+                            mininum_word_size=1,
                             valid_punctuation_marks='-',
-                            maximum_word_number=5,
-                            only_alphanum=True):
+                            maximum_word_number=4,
+                            only_alphanum=False):
         """ Filter the candidates containing strings from the stoplist. Only
             keep the candidates containing alpha-numeric characters (if the
             non_latin_filter is set to True) and those length exceeds a given

@@ -1,0 +1,4 @@
+[
+  "test.py::TestPke::test_long",
+  "test.py::TestPke::test_short"
+]
